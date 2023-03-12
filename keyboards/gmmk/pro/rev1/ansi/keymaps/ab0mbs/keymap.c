@@ -121,32 +121,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 break;
             }
         }
-        return true;
+        //return true; //set to return false to counteract enabled encoder in pro.c
+        return false;
     }
 #endif // ENCODER_ENABLE && !ENCODER_DEFAULTACTIONS_ENABLE
 
 #ifdef RGB_MATRIX_ENABLE
     // Capslock, Scroll lock and Numlock  indicator on Left side lights.
-    void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+        led_t led_state = host_keyboard_led_state();
         if (get_rgb_nightmode()) rgb_matrix_set_color_all(RGB_OFF);
-        if (IS_HOST_LED_ON(USB_LED_SCROLL_LOCK)) {
+        if (led_state.scroll_lock) {
             rgb_matrix_set_color(LED_L1, RGB_GREEN);
             rgb_matrix_set_color(LED_L2, RGB_GREEN);
         }
 
         #ifdef INVERT_NUMLOCK_INDICATOR
-            if (!IS_HOST_LED_ON(USB_LED_NUM_LOCK)) {   // on if NUM lock is OFF
+            if (!led_state.num_lock) {   // on if NUM lock is OFF
                 rgb_matrix_set_color(LED_L3, RGB_MAGENTA);
                 rgb_matrix_set_color(LED_L4, RGB_MAGENTA);
             }
         #else
-            if (IS_HOST_LED_ON(USB_LED_NUM_LOCK)) {   // Normal, on if NUM lock is ON
+            if (led_state.num_lock) {   // Normal, on if NUM lock is ON
                 rgb_matrix_set_color(LED_L3, RGB_MAGENTA);
                 rgb_matrix_set_color(LED_L4, RGB_MAGENTA);
             }
         #endif // INVERT_NUMLOCK_INDICATOR
 
-        if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK)) {
+        if (led_state.caps_lock) {
             rgb_matrix_set_color(LED_L5, RGB_RED);
             rgb_matrix_set_color(LED_L6, RGB_RED);
             rgb_matrix_set_color(LED_L7, RGB_RED);
@@ -196,6 +198,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         default:
             break;
         }
+    return false;
     }
 
     void suspend_power_down_user(void) {
