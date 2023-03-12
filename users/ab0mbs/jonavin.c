@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
     }
 
-    tap_dance_state_t tap_dance_actions[] = {
+    tap_dance_action_t tap_dance_actions[] = {
     // Tap once for shift, twice for Caps Lock
         [TD_LSFT_CAPSLOCK] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
         [TD_LSFT_CAPS_WIN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_LSFT_finished, dance_LSFT_reset),
@@ -212,7 +212,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 // Turn on/off NUM LOCK if current state is different
 void activate_numlock(bool turn_on) {
-    if (host_keyboard_led_state.num_lock != turn_on) {
+    if (host_keyboard_led_state().num_lock != turn_on) {
         tap_code(KC_NUM_LOCK);
     }
 }
